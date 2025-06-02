@@ -1,0 +1,18 @@
+     1                                  [org 0x0100]
+     2 00000000 8B07                    mov ax,[bx]
+     3 00000002 8B4600                  mov ax,[bp+0x0000]
+     4 00000005 8B04                    mov ax,[si]
+     5 00000007 8B05                    mov ax,[di]
+     6 00000009 8B870001                mov ax,[0x0100+bx]
+     7 0000000D 8B860001                mov ax,[0x0100+bp]
+     8 00000011 8B840001                mov ax,[0x0100+si]
+     9 00000015 8B850001                mov ax,[0x0100+di]
+    10 00000019 8B47F6                  mov ax,[bx-10]
+    11 0000001C 8B00                    mov ax,[bx+si]
+    12 0000001E 8B01                    mov ax,[bx+di]
+    13 00000020 8B02                    mov ax,[bp+si]
+    14 00000022 8B03                    mov ax,[bp+di]
+    15 00000024 8B4010                  mov ax,[bx+si+0x0010]
+    16 00000027 8B4110                  mov ax,[bx+di+0x0010]
+    17 0000002A B8004C                  mov ax,0x4c00
+    18 0000002D CD21                    int 0x21
