@@ -1,0 +1,28 @@
+     1                                  [org 0x0100]
+     2                                  
+     3 00000000 E90A00                             jmp start
+     4 00000003 14050000                multiplicant:  dd 1300
+     5 00000007 F401                    multiplier:    dw 500
+     6 00000009 00000000                result:        dd 0
+     7                                  
+     8                                  
+     9 0000000D B110                    start:          mov cl,16
+    10 0000000F BB0100                                  mov bx,1
+    11                                  
+    12                                  
+    13 00000012 851E[0700]              checkbit:      test bx,[multiplier]
+    14 00000016 740E                                   jz skip
+    15                                  
+    16                                  
+    17 00000018 A1[0300]                               mov ax,[multiplicant]
+    18 0000001B 0106[0900]                             add[result],ax
+    19 0000001F A1[0500]                               mov ax,[multiplicant+2]
+    20 00000022 1106[0B00]                              adc [result+2],ax
+    21                                  
+    22 00000026 D126[0300]              skip:          shl word[multiplicant],1
+    23 0000002A D116[0500]                             rcl word[multiplicant+2],1
+    24 0000002E D1E3                                    shl bx,1
+    25 00000030 FEC9                                    dec cl
+    26 00000032 75DE                                    jnz checkbit
+    27 00000034 B8004C                                  mov ax,0x4c00
+    28 00000037 CD21                                    int 0x21
