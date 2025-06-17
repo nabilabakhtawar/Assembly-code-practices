@@ -1,0 +1,66 @@
+     1                                  [org 0x0100]
+     2 00000000 E90C00                  jmp start
+     3                                  
+     4 00000003 0200020304000101        student_id: db 2, 0, 2, 3, 4, 0, 1, 1
+     5 0000000B 00                      greatest: db 0
+     6 0000000C 00                      sub_result: db 0
+     7 0000000D 00                      sort_result: db 0
+     8 0000000E 00                      swap_flag: db 0
+     9                                  
+    10                                  start:
+    11 0000000F B90800                      mov cx, 8
+    12 00000012 B300                        mov bl, 0
+    13 00000014 BE[0300]                    mov si, student_id
+    14                                  
+    15                                  Find_greatest:
+    16 00000017 8A04                        mov al, [si]
+    17 00000019 38D8                        cmp al, bl
+    18 0000001B 7E02                        jle next_number
+    19 0000001D 88C3                        mov bl, al
+    20                                  
+    21                                  next_number:
+    22 0000001F 46                          inc si
+    23 00000020 49                          dec cx
+    24 00000021 75F4                        jnz Find_greatest
+    25 00000023 881E[0B00]                  mov [greatest], bl
+    26 00000027 BE[0300]                    mov si, student_id   
+    27 0000002A BF0000                      mov di, 0
+    28 0000002D B90800                      mov cx, 8
+    29                                  
+    30                                  subroutine:
+    31 00000030 8A04                        mov al, [si]
+    32 00000032 8A1E[0B00]                  mov bl, [greatest]
+    33 00000036 28C3                        sub bl, al
+    34 00000038 889D[0C00]                  mov [sub_result + di], bl
+    35 0000003C 889D[0D00]                  mov [sort_result + di], bl
+    36 00000040 46                          inc si
+    37 00000041 47                          inc di
+    38 00000042 49                          dec cx
+    39 00000043 75EB                        jnz subroutine
+    40                                      
+    41 00000045 BB[0D00]                    mov bx, sort_result
+    42 00000048 B90700                      mov cx, 7
+    43                                  
+    44                                  main_loop:
+    45 0000004B BE0000                      mov si, 0
+    46 0000004E C606[0E00]00                mov byte[swap_flag], 0
+    47                                  
+    48                                  inner_loop:
+    49 00000053 8A00                        mov al, [bx + si]
+    50 00000055 3A4001                      cmp al, [bx + si + 1]
+    51 00000058 760D                        jbe no_swap
+    52 0000005A 8A5001                      mov dl, [bx + si + 1]
+    53 0000005D 8810                        mov [bx + si], dl
+    54 0000005F 884001                      mov [bx + si + 1], al
+    55 00000062 C606[0E00]01                mov byte [swap_flag], 1
+    56                                  
+    57                                  no_swap:
+    58 00000067 46                          inc si
+    59 00000068 39CE                        cmp si, cx
+    60 0000006A 75E7                        jne inner_loop
+    61 0000006C 803E[0E00]01                cmp byte [swap_flag], 1
+    62 00000071 74D8                        je main_loop
+    63                                  
+    64                                      
+    65 00000073 B8004C                      mov ax, 0x4c00
+    66 00000076 CD21                        int 0x21
