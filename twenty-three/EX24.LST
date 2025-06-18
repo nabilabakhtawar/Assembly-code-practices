@@ -1,0 +1,80 @@
+     1                                  [org 0x0100]
+     2                                  
+     3 00000000 E90400                  		jmp start
+     4                                  
+     5 00000003 00000000                _bits: dw 0,0
+     6                                  
+     7 00000007 B8CDAB                  start:			mov ax, 0xABCD
+     8 0000000A B90000                  				mov cx, 0
+     9 0000000D BB0080                  				mov bx, 1000000000000000b
+    10 00000010 BA0088                  				mov dx, 1000100000000000b
+    11 00000013 BE0000                  				mov si, 0
+    12 00000016 BF0000                  				mov di, 0
+    13 00000019 BD0000                  				mov bp, 0
+    14                                  
+    15 0000001C 85C3                    loop1:			test bx,ax
+    16 0000001E 752B                    				jnz save1
+    17 00000020 743C                    				jz  save0
+    18                                  				
+    19 00000022 C1EB04                  l1:				shr bx,4
+    20                                  
+    21 00000025 85C3                    				test bx,ax
+    22 00000027 7522                    				jnz  save1
+    23 00000029 7433                    				jz   save0
+    24                                  
+    25 0000002B BD0000                  l2:				mov bp,0
+    26                                  
+    27 0000002E C1E303                  				shl bx,3
+    28                                  
+    29 00000031 E93D00                  				jmp swap
+    30                                  
+    31 00000034 41                      l3:				inc cx
+    32 00000035 81F90400                				cmp cx,4
+    33 00000039 7408                    				jz  update		;After the nibbles in ah are swapped, the masks in bx and dx are updated
+    34 0000003B 81F90800                				cmp cx,8
+    35 0000003F 7443                    				jz  end
+    36                                  
+    37 00000041 EBD9                    				jmp loop1
+    38                                  				
+    39                                  
+    40 00000043 BB8000                  update:			mov bx, 0000000010000000b
+    41 00000046 BA8800                  				mov dx, 0000000010001000b
+    42 00000049 EBD1                    				jmp loop1
+    43                                  
+    44                                  
+    45 0000004B C784[0300]0100          save1:			mov word [_bits + si], 1
+    46 00000051 81C60200                				add si,2
+    47                                  
+    48 00000055 45                      				inc bp
+    49 00000056 81FD0200                				cmp bp,2
+    50 0000005A 74CF                    				jz l2
+    51 0000005C EBC4                    				jmp l1
+    52                                  
+    53 0000005E C784[0300]0000          save0:			mov word [_bits + si], 0
+    54 00000064 81C60200                				add si,2
+    55 00000068 45                      				inc bp
+    56 00000069 81FD0200                				cmp bp,2
+    57 0000006D 74BC                    				jz l2
+    58 0000006F EBB1                    				jmp l1
+    59                                  
+    60                                  
+    61 00000071 BE0000                  swap:			mov si,0
+    62                                  
+    63 00000074 8B3E[0300]              				mov di, [_bits]
+    64 00000078 3B3E[0500]              				cmp di, [_bits + 2]
+    65 0000007C 7402                    				jz  l4   		;If the bits are same then do nothing
+    66                                  
+    67 0000007E 31D0                    				xor	ax,dx
+    68                                  
+    69 00000080 D1EA                    l4:				shr dx,1
+    70 00000082 EBB0                    				jmp l3
+    71                                  
+    72                                  
+    73 00000084 B8004C                  end:			mov ax, 0x4c00
+    74 00000087 CD21                    				int 21h
+    75                                  
+    76                                  
+    77                                  
+    78                                  
+    79                                  
+    80                                  
